@@ -1,6 +1,10 @@
-var gcEmitter,
-	gcstats = require('bindings')('gcstats.node'),
-	EventEmitter = require('events').EventEmitter;
+'use strict'
+var binary = require('node-pre-gyp');
+var path = require('path');
+var bindingPath = binary.find(path.resolve(path.join(__dirname, 'package.json')));
+var binding = require(bindingPath);
+var gcEmitter
+var EventEmitter = require('events').EventEmitter;
 
 function gcStats() {
 	if (this instanceof gcStats){
@@ -8,7 +12,7 @@ function gcStats() {
    	}
 	if(!gcEmitter) {
 		gcEmitter = new EventEmitter();
-		gcstats.afterGC(function(stats) {
+		binding.afterGC(function(stats) {
 			gcEmitter.emit('data', stats);
 			gcEmitter.emit('stats', stats);
 		});
